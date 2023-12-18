@@ -6,6 +6,7 @@ namespace Hyperf\MqttClient;
 
 use Hyperf\Contract\ConnectionInterface;
 use Hyperf\Contract\PoolInterface;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Pool\Connection;
 use Hyperf\Pool\Exception\ConnectionException;
 use PhpMqtt\Client\Concerns\GeneratesRandomClientIds;
@@ -75,7 +76,8 @@ class MqttConnection extends Connection implements ConnectionInterface
             if (!empty($this->config['repository'])) {
                 $this->config['repository'] = new $this->config['repository'];
             }
-            $this->client = new MqttClient($this->config['host'], $this->config['port'], $clientId, $this->config['protocol'], $this->config['repository']);
+            $logger       = $this->container->has(StdoutLoggerInterface::class) ? $this->container->get(StdoutLoggerInterface::class) : null;
+            $this->client = new MqttClient($this->config['host'], $this->config['port'], $clientId, $this->config['protocol'], $this->config['repository'], $logger);
             $this->client->connect($this->connectionSettings, $this->config['clean_session']);
         } else {
             $this->client->connect($this->connectionSettings, $this->config['clean_session']);
