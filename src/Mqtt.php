@@ -32,7 +32,7 @@ class Mqtt
             if (!$hasContextConnection) {
                 if ($this->shouldUseSameConnection($name)) {
                     Context::set($this->getContextKey(), $connection);
-                    defer(function () use ($connection) {
+                    \Swoole\Coroutine\defer(function () use ($connection) {
                         Context::set($this->getContextKey(), null);
                         $client = $connection->getConnection();
                         $client->loop(false, true);
